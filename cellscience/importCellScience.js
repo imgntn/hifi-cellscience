@@ -3,26 +3,28 @@ var cellLayout;
 var path = Script.resolvePath('importCellScience.js')
 baseLocation = path.split('importCellScience')[0];
 print('baseLocation IS :::: ' + path)
+
+
 setEntityUserData = function(id, data) {
     var json = JSON.stringify(data)
-    Entities.editEntity(id, { userData: json });
+    Entities.editEntity(id, {
+        userData: json
+    });
 }
 
-// FIXME do non-destructive modification of the existing user data
 getEntityUserData = function(id) {
     var results = null;
     var properties = Entities.getEntityProperties(id, "userData");
     if (properties.userData) {
         try {
             results = JSON.parse(properties.userData);
-        } catch(err) {
+        } catch (err) {
             logDebug(err);
             logDebug(properties.userData);
         }
     }
     return results ? results : {};
 }
-
 
 // Non-destructively modify the user data of an entity.
 setEntityCustomData = function(customKey, id, data) {
@@ -44,13 +46,15 @@ getEntityCustomData = function(customKey, id, defaultValue) {
     }
 }
 
-function makeUngrabbable(entityID){
-print('making ungrabbable',entityID)
-setEntityCustomData('grabbableKey', entityID, {grabbable:false});
+function makeUngrabbable(entityID) {
+    print('making ungrabbable', entityID)
+    setEntityCustomData('grabbableKey', entityID, {
+        grabbable: false
+    });
 }
 
-   Entities.addingEntity.connect(makeUngrabbable);
-   
+Entities.addingEntity.connect(makeUngrabbable);
+
 assignVariables();
 
 var locations = {
@@ -601,8 +605,6 @@ function ImportScene(scene) {
             z: Number(dimensions.z) + 200
         };
 
-
-
         //print ("Label distance is " + labelDistance + " for " + name);
         if (name != "" && name != "NPC" && name != "undefined" && name != "microtubule")
             CreateIdentification(name, position, {
@@ -614,8 +616,6 @@ function ImportScene(scene) {
         CreateEntity(data[0], position, rotation, dimensions, url, "", "", true);
 
     }
-
-
 
     if (scene.name == "CellLayout") {
         MakeMTEnds();
@@ -634,7 +634,7 @@ function ImportScene(scene) {
 }
 
 function CreateNavigationButton(scene, number) {
-    print('THIS NAVIGATION CREATING NAV!!',scene,number)
+    print('NAVIGATION CREATING NAV!!', scene, number)
     Entities.addEntity({
         type: "Sphere",
         name: scene.name + " navigation button",
@@ -659,7 +659,6 @@ function CreateNavigationButton(scene, number) {
                 grabbable: false
             }
         }),
-        // position:{x:3000,y:13500,z:3000},
         script: baseLocation + "Scripts/navigationButton.js?" + version,
         collisionless: true,
 
@@ -667,6 +666,7 @@ function CreateNavigationButton(scene, number) {
 }
 
 function CreateBoundary(scene) {
+    print('CREATING SCENE BOUNDARY AROUND' + JSON.stringify(scene))
     var pts = getEvenlyDistributedPointsOnSphere(80);
 
     for (var i = 0; i < pts.length; i++) {
@@ -686,10 +686,7 @@ function CreateBoundary(scene) {
         var data = JSON.stringify({
             target: scene.boundary.target,
             location: scene.boundary.location,
-            baseURL: baseLocation,
-            grabbableKey: {
-                grabbable: false
-            }
+            baseURL: baseLocation
         });
 
         Entities.addEntity({
@@ -707,7 +704,6 @@ function CreateBoundary(scene) {
             userData: data,
             script: baseLocation + "Scripts/" + script,
             collisionless: true,
-
         });
     }
 
@@ -761,7 +757,7 @@ function deleteAllInRadius(position, radius) {
 
         Entities.deleteEntity(arrayFound[i]);
     }
-     print("deleted " + arrayFound.length + " entities");
+    print("deleted " + arrayFound.length + " entities");
 }
 
 function CreateInstances(scene) {
@@ -808,14 +804,10 @@ function CreateInstances(scene) {
 
             }
 
-            //
-
             CreateEntity(scene.instances[i].model, position, rotation, scene.instances[i].dimensions, url, script, scene.instances[i].userData, scene.instances[i].visible);
         }
     }
 }
-
-
 
 function CreateIdentification(name, position, rotation, dimensions, showDistance) {
     //print ("creating ID for " + name);
@@ -874,16 +866,6 @@ function CreateBackgroundAudio(name, position) {
 
 function getPointOnSphereOfRadius(radius, number, totalNumber) {
 
-    //  var phi = 2 * Math.PI * Math.random();
-    //  var theta = Math.PI * Math.random();
-    //  return {
-    //      x: radius * Math.sin(theta) * Math.cos(phi),
-    //      y: radius * Math.sin(theta) * Math.sin(phi),
-    //      z: radius * Math.cos(theta)
-    //  };
-
-
-
     var inc = Math.PI * (3 - Math.sqrt(5));
     var off = 2 / totalNumber;
 
@@ -905,8 +887,6 @@ function getPointOnSphereOfRadius(radius, number, totalNumber) {
         y: y * radius,
         z: Math.sin(phi) * r * radius
     };
-
-
 
 }
 
@@ -953,7 +933,7 @@ function CreateEntity(name, position, rotation, dimensions, url, script, userDat
 }
 
 function CreateZone(scene) {
-    //  print ("Creating " + scene.name + " zone.........................");
+    print("Creating " + scene.name + " zone.........................");
     Entities.addEntity({
         type: "Zone",
         name: scene.name + " Zone",

@@ -1,8 +1,8 @@
 (function() {
-    //  var baseURL = "http://dynamoidapps.com/HighFidelity/Cosm/";
+    var MAX_MOTOR_PROTEINS = 4;
     var self = this;
-    this.preload = function(entityId) {
 
+    this.preload = function(entityId) {
         this.entityId = entityId;
         this.data = JSON.parse(Entities.getEntityProperties(this.entityId).userData);
         this.buttonImageURL = this.data.baseURL + "GUI/GUI_jump_off.png";
@@ -14,16 +14,16 @@
         } else {
             this.rotation = 0;
         }
+
         var props = Entities.getEntityProperties(entityId);
-       var  results  = Entities.findEntities(props.position,10000);
-        var mpCount = 0;
-        results.forEach(function(r) {
-            var rProps = Entities.getEntityProperties(r,"name")
-            if (rProps.name.indexOf('Hifi-Motor-Protein-Anchor') > -1) {
-                mpCount++
+        var results = Entities.findEntities(props.position, 5000);
+        var motorProteinCount = 0;
+        results.forEach(function(result) {
+            var resultProps = Entities.getEntityProperties(result, "name")
+            if (resultProps.name.indexOf('Hifi-Motor-Protein-Anchor') > -1) {
+                motorProteinCount++
             }
-            print('mp count')
-            if (mpCount > 4) {
+            if (motorProteinCount > MAX_MOTOR_PROTEINS) {
                 Entities.deleteEntity(entityId);
                 return;
             }
@@ -79,7 +79,6 @@
         });
         if (event.isLeftButton && clickedOverlay === self.exitButton) {
             print("GET OFF");
-
             self.reset();
         }
     }
@@ -98,30 +97,13 @@
     this.unload = function() {
         print("unload");
         self.reset();
-
-        Controller.mousePressEvent.disconnect(this.onMousePress);
-        // Controller.mouseMoveEvent.disconnect(this.onMouseMove);
-        Controller.mouseReleaseEvent.disconnect(this.onMouseRelease);
+        Overlays.deleteOverlay(self.exitButton)
+        Controller.mousePressEvent.disconnect(self.onMousePress);
+        Controller.mouseReleaseEvent.disconnect(self.onMouseRelease);
     }
 
-    function handleMessages(channel, message, sender) {
-        print('HANDLING A MESSAGE IN PROTEIN')
-        if (sender === MyAvatar.sessionUUID) {
-            if(channel==="Hifi-Motor-Protein-Channel"){
-                if(message==='delete'){
-                    print('SHOULD DELETE PROTEIN')
-                    Entities.deleteEntity(self.entityId)
-                }
-            }
-        }
 
-    }
-
-    Messages.sendMessage('Hifi-Motor-Protein-Channel','create')
-    Messages.messageReceived.connect(handleMessages);
-
-    // Controller.mousePressEvent.connect(this.onMousePress);
-    // Controller.mouseMoveEvent.connect(this.onMouseMove);
-    // Controller.mouseReleaseEvent.connect(this.onMouseRelease);
+    Controller.mousePressEvent.connect(self.onMousePress);
+    Controller.mousePressEvent.connect(self.onMouseRelease);
 
 });
