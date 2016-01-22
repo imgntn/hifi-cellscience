@@ -1,26 +1,30 @@
 var numDynein = 2;
 var numKinesin = 2;
 var percentOnMainMT = 100;
-
-var baseLocation = "http://dynamoidapps.com/HighFidelity/Cosm/";
-
+print('RUNNING AC!!')
+// var baseLocation = "http://dynamoidapps.com/HighFidelity/Cosm/";
+var baseLocation = "http://localhost:8080/"
 var dyneinURL = this.baseLocation + "MotorProteins/dynein.fbx";
 var dyneinDimensions = {
-  x: 11.75,
-  y: 25.05,
-  z: 11.75
+    x: 11.75,
+    y: 25.05,
+    z: 11.75
 };
 var kinesinURL = this.baseLocation + "MotorProteins/kinesin.fbx";
 var kinesinDimensions = {
-  x: 17.66*1.5,
-  y: 30.52*1.5,
-  z: 17.02*1.5
+    x: 17.66 * 1.5,
+    y: 30.52 * 1.5,
+    z: 17.02 * 1.5
 };
-var scriptURL = this.baseLocation + "Scripts/clickToRideAndLook.js?151";
+var scriptURL = this.baseLocation + "Scripts/clickToRideAndLook.js?"+Math.random();
 
 var t = 0;
 var tInc = 0.001;
-var sceneOffset = {x:3000, y:13500, z:3000};
+var sceneOffset = {
+    x: 3000,
+    y: 13500,
+    z: 3000
+};
 var yOffset = {
     dynein: 16,
     kinesin: -28
@@ -29,8 +33,45 @@ var yOffset = {
 var motorProteins = [];
 var terms;
 
-function makeAll()
-{
+
+// function deleteAllMotorProteins() {
+
+//      Messages.sendMessage('Hifi-Motor-Protein-Channel','delete')
+    
+//      return;
+//     // var position = {
+//     //     x: 5000,
+//     //     y: 5000,
+//     //     z: 5000
+//     // };
+//     // print('DELETING ALL MOTOR PROTEINS')
+//     // EntityViewer.setPosition(position);
+//     // EntityViewer.setKeyholeRadius(10000);
+//     // EntityViewer.queryOctree();
+
+//     // var results = Entities.findEntities(position, 10000);
+//     // var motorProteins = [];
+
+//     // if (results.length === 0) {
+//     //     print('NO ENTITIES')
+//     //     return;
+//     // }
+//     // print('FOUND ENTITIES LENGTH:::', results.length)
+//     // results.forEach(function(r) {
+//     //     var properties = Entities.getEntitiesProperties(r, "name");
+//     //     if (properties.name.indexOf('Hifi-Motor-Protein-Anchor') > -1) {
+//     //            print('FOUND A MOTOR PROTEIN')
+//     //         motorProteins.push(r);
+//     //     }
+//     // })
+//     // while (motorProteins.length > 0) {
+//     //     print('SHOULD DELETE A MOTOR PROTEIN ENTITY')
+//     //     Entities.deleteEntity(motorProteins.pop());
+//     // }
+// }
+
+function makeAll() {
+    print('CREATING MOTOR PROTEINS')
     var segment;
     var segments = shuffleSegments();
     var lastSegment = [];
@@ -46,8 +87,7 @@ function makeAll()
     var type = "dynein";
     var numOnMain = 0;
 
-    for (var i = 0; i < numDynein + numKinesin; i++)
-    {
+    for (var i = 0; i < numDynein + numKinesin; i++) {
         if (i == numDynein) {
             isDynein = false;
             model = kinesinURL;
@@ -57,13 +97,9 @@ function makeAll()
             mt = curves.length - 1;
         }
 
-        if ((isDynein && (i > numDynein * percentOnMainMT / 100 - 1 || numOnMain >= curves[curves.length - 1].length / 2))
-           || (!isDynein && (i - numDynein > numKinesin * percentOnMainMT / 100 - 1 || numOnMain >= curves[curves.length - 1].length)))
-        {
+        if ((isDynein && (i > numDynein * percentOnMainMT / 100 - 1 || numOnMain >= curves[curves.length - 1].length / 2)) || (!isDynein && (i - numDynein > numKinesin * percentOnMainMT / 100 - 1 || numOnMain >= curves[curves.length - 1].length))) {
             mt = Math.floor((curves.length - 1) * Math.random());
-        }
-        else
-        {
+        } else {
             numOnMain++;
         }
         segment = segments[mt][lastSegment[mt]];
@@ -76,7 +112,7 @@ function makeAll()
                 segment: segment,
                 protein: Entities.addEntity({
                     type: "Model",
-                    name: type,
+                    name: 'Hifi-Motor-Protein-Anchor-' + type,
                     modelURL: model,
                     position: getPosInScene(curves[mt][segment][start]),
                     dimensions: dimensions,
@@ -84,26 +120,26 @@ function makeAll()
                     animationURL: model,
                     animationIsPlaying: true,
                     animationSettings: JSON.stringify({
-                        hold:false,
-                        loop:true,
-                        running:true,
-                        startAutomatically:true
+                        hold: false,
+                        loop: true,
+                        running: true,
+                        startAutomatically: true
                     }),
-                    visible:true,
+                    visible: true,
                     userData: JSON.stringify({
                         isDynein: isDynein,
-						baseURL:baseLocation
+                        baseURL: baseLocation
                     }),
                 })
             };
+            print('MADE A MOTOR PROTEIN!!!')
         }
     }
 
     print("made " + numDynein + " dyneins and " + numKinesin + " kinesins");
 }
 
-function shuffleSegments()
-{
+function shuffleSegments() {
     var segs = [];
     var temp = 0;
     for (var curve = 0; curve < curves.length; curve++) {
@@ -123,11 +159,11 @@ function shuffleSegments()
 }
 
 var initialized = false
-function update(deltaTime)
-{
+
+function update(deltaTime) {
     if (!initialized) {
         print("checking for servers...");
-        if (Entities.serversExist()) {
+        if (Entities.serversExist() && Entities.canRez()) {
             print("servers exist -- makeAll...");
             Entities.setPacketsPerSecond(6000);
             print("PPS:" + Entities.getPacketsPerSecond());
@@ -146,16 +182,14 @@ function update(deltaTime)
         newSegment = true;
     }
 
-    for (var i = 0; i < motorProteins.length; i++)
-    {
+    for (var i = 0; i < motorProteins.length; i++) {
         if (newSegment) {
             if (motorProteins[i].isDynein) {
                 motorProteins[i].segment--;
                 if (motorProteins[i].segment < 0) {
                     motorProteins[i].segment = curves[motorProteins[i].curve].length - 1;
                 }
-            }
-            else {
+            } else {
                 motorProteins[i].segment++;
                 if (motorProteins[i].segment > curves[motorProteins[i].curve].length - 1) {
                     motorProteins[i].segment = 0;
@@ -175,25 +209,23 @@ function update(deltaTime)
     }
 }
 
-function calculateTerms()
-{
+function calculateTerms() {
     terms = {
-        pos:[
-            (1-t)*(1-t)*(1-t),
-            3*t*(1-t)*(1-t),
-            3*t*t*(1-t),
-            t*t*t
+        pos: [
+            (1 - t) * (1 - t) * (1 - t),
+            3 * t * (1 - t) * (1 - t),
+            3 * t * t * (1 - t),
+            t * t * t
         ],
-        rot:[
-            3*(1-t)*(1-t),
-            6*t*(1-t),
-            3*t*t
+        rot: [
+            3 * (1 - t) * (1 - t),
+            6 * t * (1 - t),
+            3 * t * t
         ]
     }
 }
 
-function getPositionOnCurve(direction, segment)
-{
+function getPositionOnCurve(direction, segment) {
     var offset = yOffset.kinesin;
     var i = 0;
     var inc = 1;
@@ -203,23 +235,13 @@ function getPositionOnCurve(direction, segment)
         inc = -1;
     }
     return {
-        x:terms.pos[i] * addOffset("x", segment[0].x)
-        + terms.pos[i+inc] * addOffset("x", segment[1].x)
-        + terms.pos[i+2*inc] * addOffset("x", segment[2].x)
-        + terms.pos[i+3*inc] * addOffset("x", segment[3].x),
-        y:terms.pos[i] * addOffset("y", segment[0].y)
-        + terms.pos[i+inc] * addOffset("y", segment[1].y)
-        + terms.pos[i+2*inc] * addOffset("y", segment[2].y)
-        + terms.pos[i+3*inc] * addOffset("y", segment[3].y) + offset,
-        z:terms.pos[i] * addOffset("z", segment[0].z)
-        + terms.pos[i+inc] * addOffset("z", segment[1].z)
-        + terms.pos[i+2*inc] * addOffset("z", segment[2].z)
-        + terms.pos[i+3*inc] * addOffset("z", segment[3].z)
+        x: terms.pos[i] * addOffset("x", segment[0].x) + terms.pos[i + inc] * addOffset("x", segment[1].x) + terms.pos[i + 2 * inc] * addOffset("x", segment[2].x) + terms.pos[i + 3 * inc] * addOffset("x", segment[3].x),
+        y: terms.pos[i] * addOffset("y", segment[0].y) + terms.pos[i + inc] * addOffset("y", segment[1].y) + terms.pos[i + 2 * inc] * addOffset("y", segment[2].y) + terms.pos[i + 3 * inc] * addOffset("y", segment[3].y) + offset,
+        z: terms.pos[i] * addOffset("z", segment[0].z) + terms.pos[i + inc] * addOffset("z", segment[1].z) + terms.pos[i + 2 * inc] * addOffset("z", segment[2].z) + terms.pos[i + 3 * inc] * addOffset("z", segment[3].z)
     };
 }
 
-function getRotationOnCurve(direction, segment)
-{
+function getRotationOnCurve(direction, segment) {
     var i = 0;
     var inc = 1;
     if (direction < 0) {
@@ -227,20 +249,25 @@ function getRotationOnCurve(direction, segment)
         inc = -1;
     }
     var tangent = Vec3.normalize({
-        x:terms.pos[i] * (addOffset("x", segment[1].x) - addOffset("x", segment[0].x))
-        + terms.pos[i+inc] * (addOffset("x", segment[2].x) - addOffset("x", segment[1].x))
-        + terms.pos[i+2*inc] * (addOffset("x", segment[3].x) - addOffset("x", segment[2].x)),
-        y:terms.pos[i] * (addOffset("y", segment[1].y) - addOffset("y", segment[0].y))
-        + terms.pos[i+inc] * (addOffset("y", segment[2].y) - addOffset("y", segment[1].y))
-        + terms.pos[i+2*inc] * (addOffset("y", segment[3].y) - addOffset("y", segment[2].y)),
-        z:terms.pos[i] * (addOffset("z", segment[1].z) - addOffset("z", segment[0].z))
-        + terms.pos[i+inc] * (addOffset("z", segment[2].z) - addOffset("z", segment[1].z))
-        + terms.pos[i+2*inc] * (addOffset("z", segment[3].z) - addOffset("z", segment[2].z))
+        x: terms.pos[i] * (addOffset("x", segment[1].x) - addOffset("x", segment[0].x)) + terms.pos[i + inc] * (addOffset("x", segment[2].x) - addOffset("x", segment[1].x)) + terms.pos[i + 2 * inc] * (addOffset("x", segment[3].x) - addOffset("x", segment[2].x)),
+        y: terms.pos[i] * (addOffset("y", segment[1].y) - addOffset("y", segment[0].y)) + terms.pos[i + inc] * (addOffset("y", segment[2].y) - addOffset("y", segment[1].y)) + terms.pos[i + 2 * inc] * (addOffset("y", segment[3].y) - addOffset("y", segment[2].y)),
+        z: terms.pos[i] * (addOffset("z", segment[1].z) - addOffset("z", segment[0].z)) + terms.pos[i + inc] * (addOffset("z", segment[2].z) - addOffset("z", segment[1].z)) + terms.pos[i + 2 * inc] * (addOffset("z", segment[3].z) - addOffset("z", segment[2].z))
     });
-    var pitch = Quat.angleAxis(Math.asin(direction * -tangent.y) * 180.0 / Math.PI, {x:1, y:0, z:0});
-    var yaw = Quat.angleAxis(Math.atan2(direction * tangent.x, direction * tangent.z) * 180.0 / Math.PI,
-                             {x:0, y:1, z:0});
-    var roll = Quat.angleAxis(180, {x:0, y:0, z:1});
+    var pitch = Quat.angleAxis(Math.asin(direction * -tangent.y) * 180.0 / Math.PI, {
+        x: 1,
+        y: 0,
+        z: 0
+    });
+    var yaw = Quat.angleAxis(Math.atan2(direction * tangent.x, direction * tangent.z) * 180.0 / Math.PI, {
+        x: 0,
+        y: 1,
+        z: 0
+    });
+    var roll = Quat.angleAxis(180, {
+        x: 0,
+        y: 0,
+        z: 1
+    });
 
     if (direction < 0) {
         return Quat.multiply(yaw, pitch);
@@ -249,34 +276,35 @@ function getRotationOnCurve(direction, segment)
     }
 }
 
-function getPosInScene(pos)
-{
-    return {x:addOffset("x", pos.x), y:addOffset("y", pos.y), z:addOffset("z", pos.z)};
+function getPosInScene(pos) {
+    return {
+        x: addOffset("x", pos.x),
+        y: addOffset("y", pos.y),
+        z: addOffset("z", pos.z)
+    };
 }
 
-function addOffset(dimension, n)
-{
+function addOffset(dimension, n) {
     var offset = sceneOffset.x;
     if (dimension == "y") {
         offset = sceneOffset.y;
-    }
-    else if (dimension == "z") {
+    } else if (dimension == "z") {
         offset = sceneOffset.z;
     }
     return n + offset;
 }
 
-function unload()
-{
+function unload() {
+    print('DELETE MOTOR PROTEINS AT UNLOAD' + Entities.serversExist() + "//" + Entities.canRez())
+     Messages.sendMessage('Hifi-Motor-Protein-Channel','delete')
     print("unload motorProteinController");
     print("   PPS:" + Entities.getPacketsPerSecond());
     Script.update.disconnect(this.update);
     for (var i = 0; i < motorProteins.length; i++) {
         Entities.deleteEntity(motorProteins[i].protein);
     }
-    print("pending packets:"+Entities.packetsToSendCount());
+    print("pending packets:" + Entities.packetsToSendCount());
 }
-
 var curves = [
         [[{x:-495.1377539, y:447.6999851, z:67.71881918}, {x:-459.8060244, y:430.0299175, z:58.61231833}, {x:-430.0561194, y:393.4288088, z:58.18999042}, {x:-396.3439356, y:368.0364237, z:55.07196935}],
     [{x:-396.3439356, y:368.0364237, z:55.07196935}, {x:-371.0597978, y:348.9921349, z:52.73345354}, {x:-343.5468781, y:336.252753, z:48.87861033}, {x:-313.7608397, y:326.6089999, z:39.67528364}],

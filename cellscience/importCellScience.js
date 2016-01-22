@@ -49,9 +49,7 @@ print('making ungrabbable',entityID)
 setEntityCustomData('grabbableKey', entityID, {grabbable:false});
 }
 
-   Entities.addingEntity.connect(function(entityId) {
-        makeUngrabbable(entityId);
-    });
+   Entities.addingEntity.connect(makeUngrabbable);
    
 assignVariables();
 
@@ -636,8 +634,7 @@ function ImportScene(scene) {
 }
 
 function CreateNavigationButton(scene, number) {
-    print('CREATING NAV!!',scene,number)
-    print('create nav::' + scene + " // " + number)
+    print('THIS NAVIGATION CREATING NAV!!',scene,number)
     Entities.addEntity({
         type: "Sphere",
         name: scene.name + " navigation button",
@@ -763,9 +760,8 @@ function deleteAllInRadius(position, radius) {
     for (var i = 0; i < arrayFound.length; i++) {
 
         Entities.deleteEntity(arrayFound[i]);
-        // Entities.deletingEntity(arrayFound[i]);
     }
-    //  print("deleted " + arrayFound.length + " entities");
+     print("deleted " + arrayFound.length + " entities");
 }
 
 function CreateInstances(scene) {
@@ -9089,3 +9085,5 @@ Entities.addEntity({
         blue: 240
     }
 })
+
+Script.scriptEnding.disconnect(makeUngrabbable);

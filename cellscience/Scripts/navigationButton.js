@@ -39,6 +39,7 @@
 			visible: true,
 			alpha: 1.0
 		});
+        print('THIS NAVIGATION BUTTON OVERLAY IS::'+this.button)
 
 	}
 
@@ -98,14 +99,14 @@
 	}
 
 	this.unload = function () {
-		print('NAVIGATION BUTTON UNLOAD!!!',this.entityId)
+		print('THIS NAVIGATION BUTTON UNLOAD!!!',this.button,this.entityId)
 		Overlays.deleteOverlay(self.button);
 
 		Controller.mousePressEvent.disconnect(this.onClick);
-		  Script.update.disconnect(this.update);
+		  // Script.update.disconnect(this.update);
 	}
 
 	Controller.mousePressEvent.connect(this.onClick);
-	  Script.update.connect(this.update);
+	  // Script.update.connect(this.update);
 
 });

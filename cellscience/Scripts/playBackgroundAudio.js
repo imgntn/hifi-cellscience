@@ -49,7 +49,7 @@
 
     this.leaveEntity = function(entityID) {
         print("leaving audio area " + self.userData.name);
-        if (self.soundPlaying != null) {
+        if (self.soundPlaying !== false) {
             print("not null");
             print("Stopped sound " + self.userData.name);
             self.soundPlaying.stop();
