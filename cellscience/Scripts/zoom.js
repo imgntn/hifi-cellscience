@@ -9,7 +9,6 @@
 	this.preload = function(entityID) {
 		this.entityId = entityID;
 
-
 		var properties = Entities.getEntityProperties(entityID);
 		portalDestination = properties.userData;
 		animationURL = properties.modelURL;
@@ -22,10 +21,11 @@
 		};
 		this.teleportSound = SoundCache.getSound("http://dynamoidapps.com.com/HighFidelity/Cosm/Audio/whoosh.wav");
 
-		//	print("The portal destination is " + portalDestination);
+			print(" portal destination is " + portalDestination);
 	}
 
 	this.enterEntity = function(entityID) {
+		print('ENTERED A BOUNDARY ENTITY, SHOULD ZOOM', entityID)
 
 		var data = JSON.parse(Entities.getEntityProperties(this.entityId).userData);
 

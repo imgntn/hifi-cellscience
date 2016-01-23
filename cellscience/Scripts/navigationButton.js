@@ -10,7 +10,7 @@
 
 	this.preload = function (entityId) {
 		this.entityId = entityId;
-
+		self.button=null;
 		self.getUserData();
 		this.buttonImageURL = self.userData.baseURL + "GUI/GUI_" + self.userData.name + ".png?" + version;
 
@@ -22,6 +22,8 @@
 	}
 
 	this.addButton = function () {
+
+
 		self.getUserData();
 		this.windowDimensions = Controller.getViewportDimensions();
 		this.buttonWidth = 150;
@@ -39,6 +41,19 @@
 			visible: true,
 			alpha: 1.0
 		});
+
+		var storedOverlays =  Settings.getValue('cellscienceOverlays');
+		var currentOverlays = [];
+		if(storedOverlays.length!==0){
+			storedOverlays.push(this.button);
+			currentOverlays = storedOverlays;
+		}
+		else{
+			currentOverlays.push(this.button)
+		}
+
+		// Settings.setValue('cellscienceOverlays',currentOverlays);
+		print('CURRENT OVERLAYS:::'+currentOverlays)
         print('THIS NAVIGATION BUTTON OVERLAY IS::'+this.button)
 
 	}
@@ -98,9 +113,21 @@
 		}
 	}
 
+var buttonDeleter;
+var deleterCount = 0;
 	this.unload = function () {
 		print('THIS NAVIGATION BUTTON UNLOAD!!!',this.button,this.entityId)
+
+
 		Overlays.deleteOverlay(self.button);
+		// buttonDeleter=Script.setInterval(function(){
+		// 	print('INSIDE BUTTON DELETER INTERVAL',deleterCount)
+		// 	Overlays.deleteOverlay(self.button);
+		// 	deleterCount++;
+		// 	if(deleterCount===10){
+		// 		Script.clearInterval(buttonDeleter);
+		// 	}
+		// },1000)
 
 		Controller.mousePressEvent.disconnect(this.onClick);
 		  // Script.update.disconnect(this.update);

@@ -201,6 +201,8 @@ function update(deltaTime) {
         }
         var newPos = getPositionOnCurve(dir, curves[motorProteins[i].curve][motorProteins[i].segment]);
         var newRot = getRotationOnCurve(dir, curves[motorProteins[i].curve][motorProteins[i].segment]);
+
+        print('NEW MOTOR PROTEIN POSITION:::'+JSON.stringify(newPos));
         Entities.editEntity(motorProteins[i].protein, {
             type: "Model",
             position: newPos,

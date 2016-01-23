@@ -1,10 +1,17 @@
 (function() {
     //  var baseURL = "http://dynamoidapps.com/HighFidelity/Cosm/";
+
+    var TARGET_OFFSET = {
+        x: -1,
+        y: 1
+        z: -1
+    }
+
     var self = this;
     this.preload = function(entityId) {
 
         this.entityId = entityId;
-        this.data = JSON.parse(Entities.getEntityProperties(this.entityId).userData);
+        this.data = JSON.parse(Entities.getEntityProperties(this.entityId, "userData").userData);
         this.buttonImageURL = this.data.baseURL + "GUI/GUI_jump_off.png";
         this.addExitButton();
         this.isRiding = false;
@@ -15,10 +22,11 @@
             this.rotation = 0;
         }
         var props = Entities.getEntityProperties(entityId);
-       var  results  = Entities.findEntities(props.position,10000);
+        var results = Entities.findEntities(props.position, 10000);
         var mpCount = 0;
+
         results.forEach(function(r) {
-            var rProps = Entities.getEntityProperties(r,"name")
+            var rProps = Entities.getEntityProperties(r, "name")
             if (rProps.name.indexOf('Hifi-Motor-Protein-Anchor') > -1) {
                 mpCount++
             }
@@ -51,6 +59,7 @@
     }
 
     this.parentThisEntityToAvatar = function() {
+        // MyAvatar.position = Entities.getEntityProperties(this.entityId,"position").position;
         MyAvatar.setParentID(this.entityId);
     }
 
@@ -59,19 +68,47 @@
     }
 
     this.clickReleaseOnEntity = function(entityId, mouseEvent) {
+        print('CLICKED ON MOTOR PROTEIN')
         if (mouseEvent.isLeftButton && !self.isRiding) {
             print("GET ON");
             self.isRiding = true;
             if (!self.entityId) {
                 self.entityId = entityId;
             }
-            self.parentThisEntityToAvatar();
+            self.entityLocation = Entities.getEntityProperties(this.entityId, "position").position;
+            self.targetLocation = Vec3.sum(self.entityLocation, TARGET_OFFSET);
             Overlays.editOverlay(self.exitButton, {
                 visible: true
             });
+            Controller.mousePressEvent.connect(this.onMousePress);
+            Controller.mouseReleaseEvent.connect(this.onMouseRelease);
+            Script.update.connect(this.update);
         }
     }
 
+    this.lastAvatarPosition = null;
+    this.lastEntityPosition = null;
+    this.update = function(deltaTime) {
+        if (self.isRiding !== true) {
+            return
+        }
+
+        self.lastEntityLocation = self.entityLocation;
+        self.lastTargetLocation = self.targetLocation
+        self.entityLocation = Entities.getEntityProperties(self.entityId, "position").position;
+        self.targetLocation = Vec3.sum(self.entityLocation, TARGET_OFFSET);
+
+    }
+
+
+    this.addThrustToAvatar = function(deltaTime) {
+
+        self.velocity = Vec3.multiply(Vec3.subtract(self.entityLocation, this.lastEntityLocation), 1 / deltaTime);
+
+        MyAvatar.addThrust(Vec3.multiply(self.velocity, deltaTime));
+
+    }
+    
     this.onMousePress = function(event) {
         var clickedOverlay = Overlays.getOverlayAtPoint({
             x: event.x,
@@ -79,7 +116,7 @@
         });
         if (event.isLeftButton && clickedOverlay === self.exitButton) {
             print("GET OFF");
-
+            Script.update.disconnect(this.update);
             self.reset();
         }
     }
@@ -100,15 +137,14 @@
         self.reset();
 
         Controller.mousePressEvent.disconnect(this.onMousePress);
-        // Controller.mouseMoveEvent.disconnect(this.onMouseMove);
         Controller.mouseReleaseEvent.disconnect(this.onMouseRelease);
     }
 
     function handleMessages(channel, message, sender) {
         print('HANDLING A MESSAGE IN PROTEIN')
         if (sender === MyAvatar.sessionUUID) {
-            if(channel==="Hifi-Motor-Protein-Channel"){
-                if(message==='delete'){
+            if (channel === "Hifi-Motor-Protein-Channel") {
+                if (message === 'delete') {
                     print('SHOULD DELETE PROTEIN')
                     Entities.deleteEntity(self.entityId)
                 }
@@ -117,11 +153,8 @@
 
     }
 
-    Messages.sendMessage('Hifi-Motor-Protein-Channel','create')
     Messages.messageReceived.connect(handleMessages);
 
-    // Controller.mousePressEvent.connect(this.onMousePress);
-    // Controller.mouseMoveEvent.connect(this.onMouseMove);
-    // Controller.mouseReleaseEvent.connect(this.onMouseRelease);
+
 
 });

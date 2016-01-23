@@ -1,5 +1,6 @@
 (function() {
     var self = this;
+    print('CREATING ADUIO ZONE ENTITY')
 
     var version = 7;
     this.preload = function(entityId) {

@@ -1,4 +1,4 @@
-var version = 233;
+var version = 255;
 var cellLayout;
 var path = Script.resolvePath('importCellScience.js')
 baseLocation = path.split('importCellScience')[0];
@@ -49,7 +49,7 @@ print('making ungrabbable',entityID)
 setEntityCustomData('grabbableKey', entityID, {grabbable:false});
 }
 
-   Entities.addingEntity.connect(makeUngrabbable);
+Entities.addingEntity.connect(makeUngrabbable);
    
 assignVariables();
 
@@ -667,6 +667,7 @@ function CreateNavigationButton(scene, number) {
 }
 
 function CreateBoundary(scene) {
+    print('CREATING BOUNDARY FOR SCENE '+ JSON.stringify(scene));
     var pts = getEvenlyDistributedPointsOnSphere(80);
 
     for (var i = 0; i < pts.length; i++) {
@@ -687,9 +688,6 @@ function CreateBoundary(scene) {
             target: scene.boundary.target,
             location: scene.boundary.location,
             baseURL: baseLocation,
-            grabbableKey: {
-                grabbable: false
-            }
         });
 
         Entities.addEntity({
@@ -835,9 +833,6 @@ function CreateIdentification(name, position, rotation, dimensions, showDistance
             showDistance: showDistance,
             name: name,
             baseURL: baseLocation,
-            grabbableKey: {
-                grabbable: false
-            }
         }),
         script: baseLocation + "Scripts/showIdentification.js?" + version,
         collisionless: true,
@@ -859,9 +854,6 @@ function CreateBackgroundAudio(name, position) {
         position: position,
         visible: false,
         userData: JSON.stringify({
-            grabbableKey: {
-                grabbable: false
-            },
             name: name,
             baseURL: baseLocation
         }),
@@ -9086,4 +9078,6 @@ Entities.addEntity({
     }
 })
 
-Script.scriptEnding.disconnect(makeUngrabbable);
+Script.scriptEnding.connect(function(){
+    Entities.addingEntity.disconnect(makeUngrabbable);
+});
