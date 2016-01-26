@@ -1,5 +1,5 @@
 (function() {
-    var baseURL = "http://dynamoidapps.com/HighFidelity/Cosm/";
+    var baseURL ="https://hifi-content.s3.amazonaws.com/hifi-content/DomainContent/CellScience/";
     var self = this;
     this.buttonImageURL = baseURL + "GUI/play_audio.svg?2";
 

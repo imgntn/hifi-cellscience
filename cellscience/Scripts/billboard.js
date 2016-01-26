@@ -1,4 +1,4 @@
-var spriteURL = "http://dynamoidapps.com/HighFidelity/Cosm/Sprites/nucleosomes_sprite.fbx";
+var spriteURL = "https://hifi-content.s3.amazonaws.com/DomainContent/CellScience/Sprites/nucleosomes_sprite.fbx";
 var spriteDimensions = {
     x: 10,
     y: 10,

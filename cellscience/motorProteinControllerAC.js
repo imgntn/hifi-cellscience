@@ -2,8 +2,16 @@ var numDynein = 2;
 var numKinesin = 2;
 var percentOnMainMT = 100;
 print('RUNNING AC!!')
-// var baseLocation = "http://dynamoidapps.com/HighFidelity/Cosm/";
-var baseLocation = "http://localhost:8080/"
+
+var USE_LOCAL_HOST = false;
+var baseLocation;
+if(USE_LOCAL_HOST===true){
+ baseLocation = "http://localhost:8080/";
+}
+else{
+ baseLocation = "https://hifi-content.s3.amazonaws.com/DomainContent/CellScience/"
+}
+
 var dyneinURL = this.baseLocation + "MotorProteins/dynein.fbx";
 var dyneinDimensions = {
     x: 11.75,

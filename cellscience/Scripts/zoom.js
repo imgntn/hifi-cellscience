@@ -19,7 +19,7 @@
 			position:this.position,
 			volume: 1.0
 		};
-		this.teleportSound = SoundCache.getSound("http://dynamoidapps.com.com/HighFidelity/Cosm/Audio/whoosh.wav");
+		this.teleportSound = SoundCache.getSound("https://hifi-content.s3.amazonaws.com/DomainContent/CellScience/Audio/whoosh.wav");
 
 			print(" portal destination is " + portalDestination);
 	}

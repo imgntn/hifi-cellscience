@@ -1,9 +1,8 @@
 (function() {
-    //  var baseURL = "http://dynamoidapps.com/HighFidelity/Cosm/";
 
     var TARGET_OFFSET = {
         x: -1,
-        y: 1
+        y: 1,
         z: -1
     }
 
@@ -58,15 +57,6 @@
         });
     }
 
-    this.parentThisEntityToAvatar = function() {
-        // MyAvatar.position = Entities.getEntityProperties(this.entityId,"position").position;
-        MyAvatar.setParentID(this.entityId);
-    }
-
-    this.unparentThisEntityFromAvatar = function() {
-        MyAvatar.setParentID('');
-    }
-
     this.clickReleaseOnEntity = function(entityId, mouseEvent) {
         print('CLICKED ON MOTOR PROTEIN')
         if (mouseEvent.isLeftButton && !self.isRiding) {
@@ -81,7 +71,6 @@
                 visible: true
             });
             Controller.mousePressEvent.connect(this.onMousePress);
-            Controller.mouseReleaseEvent.connect(this.onMouseRelease);
             Script.update.connect(this.update);
         }
     }
@@ -93,22 +82,39 @@
             return
         }
 
+        Entities.editEntity(self.entityId, {
+            velocity: {
+                x: 1,
+                y: 0,
+                z: 0
+            }
+        })
         self.lastEntityLocation = self.entityLocation;
         self.lastTargetLocation = self.targetLocation
         self.entityLocation = Entities.getEntityProperties(self.entityId, "position").position;
         self.targetLocation = Vec3.sum(self.entityLocation, TARGET_OFFSET);
-
+        //  print('JBP self.lastTargetLocation' + JSON.stringify(self.lastTargetLocation))
+        //  print('JBP self.targetLocation' + JSON.stringify(self.targetLocation))
+        var diff = Vec3.distance(self.targetLocation, self.lastTargetLocation);
+        print('JBP diff is::' + diff)
+        self.addThrustToAvatar(deltaTime);
     }
 
 
     this.addThrustToAvatar = function(deltaTime) {
+        var targetCurrentLocationToLastLocation = Vec3.subtract(self.targetLocation, self.lastTargetLocation);
 
-        self.velocity = Vec3.multiply(Vec3.subtract(self.entityLocation, this.lastEntityLocation), 1 / deltaTime);
+        // print('JBP targetCurrentLocationToLastLocation' + JSON.stringify(targetCurrentLocationToLastLocation));
+        // print('JBP deltaTime' + deltaTime)
+        // print('JBP velocity' + JSON.stringify(self.velocity))
+        var thrustToAdd = Vec3.multiply(100, targetCurrentLocationToLastLocation);
+        thrustToAdd = Vec3.multiply(thrustToAdd, 1 / deltaTime);
+        print('JBP adding thrust!' + JSON.stringify(thrustToAdd))
 
-        MyAvatar.addThrust(Vec3.multiply(self.velocity, deltaTime));
+        MyAvatar.addThrust(thrustToAdd);
 
     }
-    
+
     this.onMousePress = function(event) {
         var clickedOverlay = Overlays.getOverlayAtPoint({
             x: event.x,
@@ -124,7 +130,6 @@
     this.reset = function() {
         print('reset')
         if (self.isRiding) {
-            self.unparentThisEntityFromAvatar();
             Overlays.editOverlay(this.exitButton, {
                 visible: false
             });
@@ -137,7 +142,6 @@
         self.reset();
 
         Controller.mousePressEvent.disconnect(this.onMousePress);
-        Controller.mouseReleaseEvent.disconnect(this.onMouseRelease);
     }
 
     function handleMessages(channel, message, sender) {

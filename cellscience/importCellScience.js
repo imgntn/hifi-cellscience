@@ -2,6 +2,7 @@ var version = 255;
 var cellLayout;
 var path = Script.resolvePath('importCellScience.js')
 baseLocation = path.split('importCellScience')[0];
+
 print('baseLocation IS :::: ' + path)
 setEntityUserData = function(id, data) {
     var json = JSON.stringify(data)
