@@ -1,9 +1,7 @@
 var version = 255;
 var cellLayout;
-var path = Script.resolvePath('importCellScience.js')
-baseLocation = path.split('importCellScience')[0];
-
-print('baseLocation IS :::: ' + path)
+var baseLocation = "https://hifi-content.s3.amazonaws.com/DomainContent/CellScience/";
+print('baseLocation IS :::: ' + baseLocation)
 setEntityUserData = function(id, data) {
     var json = JSON.stringify(data)
     Entities.editEntity(id, { userData: json });
@@ -581,6 +579,8 @@ function ImportScene(scene) {
         var posX = Number(data[1]) + scene.location.x;
         var posY = Number(data[2]) + scene.location.y;
         var posZ = Number(data[3]) + scene.location.z;
+        print('JBP IN IMPORT SCENE FOR' + JSON.stringify(scene));
+        print('JBP DATA IN IMPORT SCENE ' + JSON.stringify(data));
         var url = baseLocation + scene.name + "/" + data[0] + ".fbx?" + version;
         var position = {
             x: posX,
@@ -612,7 +612,7 @@ function ImportScene(scene) {
                 z: 0
             }, idDimensions, labelDistance);
 
-        CreateEntity(data[0], position, rotation, dimensions, url, "", "", true);
+     //   CreateEntity(data[0], position, rotation, dimensions, url, "", "", true);
 
     }
 
@@ -624,18 +624,34 @@ function ImportScene(scene) {
     }
     //create zone and instances
 
-    CreateZone(scene);
-    CreateInstances(scene);
-    CreateBoundary(scene);
+    // CreateZone(scene);
+    // CreateInstances(scene);
+    // CreateBoundary(scene);
 
-    CreateBackgroundAudio(scene.name, scene.location, scene.dimensions);
+    // CreateBackgroundAudio(scene.name, scene.location, scene.dimensions);
 
     print("done " + scene.name);
 
 }
 
+var navButtonCount = 0;
+var MAX_NAV_BUTTONS= 4;
+clearAllNav();
+function clearAllNav() {
+    print('CLEARING ALL NAV');
+    var result = Entities.findEntities(MyAvatar.position, 25000);
+    result.forEach(function(r) {
+        var properties = Entities.getEntityProperties(r, "name");
+        if (properties.name.indexOf('navigation button') > -1) {
+            print('DELETING NAV BUTTON AT START:: '+r)
+            Entities.deleteEntity(r);
+        }
+    })
+}
 function CreateNavigationButton(scene, number) {
-    print('THIS NAVIGATION CREATING NAV!!',scene,number)
+    print('THIS NAVIGATION CREATING NAV!!' +scene.name + " " + number)
+
+
     Entities.addEntity({
         type: "Sphere",
         name: scene.name + " navigation button",
@@ -661,10 +677,11 @@ function CreateNavigationButton(scene, number) {
             }
         }),
         // position:{x:3000,y:13500,z:3000},
-        script: baseLocation + "Scripts/navigationButton.js?" + version,
+        script: baseLocation + "Scripts/navigationButton.js" ,
         collisionless: true,
 
     });
+
 }
 
 function CreateBoundary(scene) {
@@ -843,7 +860,7 @@ function CreateIdentification(name, position, rotation, dimensions, showDistance
 }
 
 function CreateBackgroundAudio(name, position) {
-    //  print ("creating ID for " + name);
+   print("JBP creating BACKGROUND AUDIO for " + name);
     Entities.addEntity({
         type: "Sphere",
         name: "Location " + name + " background audio",
@@ -9042,9 +9059,9 @@ function assignVariables() {
 }
 
 for (var i = 0; i < scenes.length; i++) {
-    print('setting up scene.  first, delete' + JSON.stringify(scenes[i]))
+    // print('setting up scene.  first, delete' + JSON.stringify(scenes[i]))
     deleteAllInRadius(scenes[i].location, scenes[i].zone.dimensions.x);
-    ImportScene(scenes[i]);
+   // ImportScene(scenes[i]);
     print('setting up scene.  then import')
     CreateNavigationButton(scenes[i], i);
 }
@@ -9058,26 +9075,26 @@ for (var i = 0; i < scenes.length; i++) {
 //  visible: false
 //});
 
-Entities.addEntity({
-    type: "Light",
-    name: "Cell layout light",
-    position: {
-        x: locations.cellLayout[0] + 110,
-        y: locations.cellLayout[0] + 160,
-        z: locations.cellLayout[0] + 785
-    },
-    dimensions: {
-        x: 1500,
-        y: 1500,
-        z: 1500
-    },
-    intensity: 2,
-    color: {
-        red: 240,
-        green: 165,
-        blue: 240
-    }
-})
+// Entities.addEntity({
+//     type: "Light",
+//     name: "Cell layout light",
+//     position: {
+//         x: locations.cellLayout[0] + 110,
+//         y: locations.cellLayout[0] + 160,
+//         z: locations.cellLayout[0] + 785
+//     },
+//     dimensions: {
+//         x: 1500,
+//         y: 1500,
+//         z: 1500
+//     },
+//     intensity: 2,
+//     color: {
+//         red: 240,
+//         green: 165,
+//         blue: 240
+//     }
+// })
 
 Script.scriptEnding.connect(function(){
     Entities.addingEntity.disconnect(makeUngrabbable);

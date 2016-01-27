@@ -1,20 +1,27 @@
 (function () {
 
-
 	var version = 1;
 	var added = false;
 	this.frame=0;
 
 	var self = this;
-
+	var baseURL = "https://hifi-content.s3.amazonaws.com/DomainContent/CellScience/";
 
 	this.preload = function (entityId) {
+		print('THIS NAV CALLING PRELOAD FOR ' + entityId)
 		this.entityId = entityId;
-		self.button=null;
 		self.getUserData();
-		this.buttonImageURL = self.userData.baseURL + "GUI/GUI_" + self.userData.name + ".png?" + version;
+		this.buttonImageURL = baseURL + "GUI/GUI_" + self.userData.name + ".png?" + version;
+		if(self.button===undefined){
+			print('THIS NAV SELF BUTTON IS UNDEFINED, ADDING')
+			self.button = true;
+			self.addButton();
 
-		self.addButton();
+		}
+		else{
+			print('THIS ANV SELF ALRAEDY HAS A BUTTON!!')
+		}
+		
 		  
 			   print ("BODY PITCH: " + JSON.stringify(MyAvatar.bodyPitch)
 			  + "BODY YAW: " + JSON.stringify(MyAvatar.bodyYaw)
@@ -55,6 +62,7 @@
 		// Settings.setValue('cellscienceOverlays',currentOverlays);
 		print('CURRENT OVERLAYS:::'+currentOverlays)
         print('THIS NAVIGATION BUTTON OVERLAY IS::'+this.button)
+
 
 	}
 

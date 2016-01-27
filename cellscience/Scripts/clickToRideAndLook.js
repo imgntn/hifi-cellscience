@@ -6,12 +6,15 @@
         z: -1
     }
 
+    var baseURL = "https://hifi-content.s3.amazonaws.com/DomainContent/CellScience/";
+
     var self = this;
+    
     this.preload = function(entityId) {
 
         this.entityId = entityId;
         this.data = JSON.parse(Entities.getEntityProperties(this.entityId, "userData").userData);
-        this.buttonImageURL = this.data.baseURL + "GUI/GUI_jump_off.png";
+        this.buttonImageURL = baseURL + "GUI/GUI_jump_off.png";
         this.addExitButton();
         this.isRiding = false;
 

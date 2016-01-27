@@ -1,15 +1,15 @@
 (function() {
     var self = this;
     print('CREATING ADUIO ZONE ENTITY')
-
+    var baseURL = "https://hifi-content.s3.amazonaws.com/DomainContent/CellScience/";
     var version = 7;
     this.preload = function(entityId) {
         self.soundPlaying = false;
         self.entityId = entityId;
         self.getUserData();
-        self.soundURL = self.userData.baseURL + "Audio/" + self.userData.name + ".wav?" + version;
-		print("WAV name location is " + self.userData.baseURL + "Audio/" + self.userData.name + ".wav");
-		
+        self.soundURL = baseURL + "Audio/" + self.userData.name + ".wav?" + version;
+        print("JBP creating WAV name location is " + baseURL + "Audio/" + self.userData.name + ".wav");
+
         self.soundOptions = {
             stereo: true,
             loop: true,

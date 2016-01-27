@@ -1,16 +1,16 @@
 (function() {
 
     var self = this;
-
+var baseURL = "https://hifi-content.s3.amazonaws.com/DomainContent/CellScience/";
 
     var version = 1;
     this.preload = function(entityId) {
         this.soundPlaying=null;
         this.entityId = entityId;
         self.getUserData();
-        this.labelURL = self.userData.baseURL + "GUI/labels_" + self.userData.name + ".png?" + version;
+        this.labelURL = baseURL + "GUI/labels_" + self.userData.name + ".png?" + version;
         this.showDistance = self.userData.showDistance;
-        this.soundURL = self.userData.baseURL + "Audio/" + self.userData.name + ".wav";
+        this.soundURL = baseURL + "Audio/" + self.userData.name + ".wav";
         this.soundOptions = {
             stereo: true,
             loop: false,
@@ -19,7 +19,7 @@
             position: this.position
         };
         this.sound = SoundCache.getSound(this.soundURL);
-        this.buttonImageURL = self.userData.baseURL + "GUI/GUI_audio.png?" + version;
+        this.buttonImageURL = baseURL + "GUI/GUI_audio.png?" + version;
         self.addButton();
     }
 
