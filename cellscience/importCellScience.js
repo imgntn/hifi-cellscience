@@ -2,46 +2,9 @@ var version = 255;
 var cellLayout;
 var baseLocation = "https://hifi-content.s3.amazonaws.com/DomainContent/CellScience/";
 print('baseLocation IS :::: ' + baseLocation)
-setEntityUserData = function(id, data) {
-    var json = JSON.stringify(data)
-    Entities.editEntity(id, { userData: json });
-}
 
-// FIXME do non-destructive modification of the existing user data
-getEntityUserData = function(id) {
-    var results = null;
-    var properties = Entities.getEntityProperties(id, "userData");
-    if (properties.userData) {
-        try {
-            results = JSON.parse(properties.userData);
-        } catch(err) {
-            logDebug(err);
-            logDebug(properties.userData);
-        }
-    }
-    return results ? results : {};
-}
-
-
-// Non-destructively modify the user data of an entity.
-setEntityCustomData = function(customKey, id, data) {
-    var userData = getEntityUserData(id);
-    if (data == null) {
-        delete userData[customKey];
-    } else {
-        userData[customKey] = data;
-    }
-    setEntityUserData(id, userData);
-}
-
-getEntityCustomData = function(customKey, id, defaultValue) {
-    var userData = getEntityUserData(id);
-    if (undefined != userData[customKey]) {
-        return userData[customKey];
-    } else {
-        return defaultValue;
-    }
-}
+var utilsScript = Script.resolvePath('Scripts/utils.js');
+Script.include(utilsScript);
 
 function makeUngrabbable(entityID){
 print('making ungrabbable',entityID)
@@ -634,22 +597,20 @@ function ImportScene(scene) {
 
 }
 
-var navButtonCount = 0;
-var MAX_NAV_BUTTONS= 4;
 clearAllNav();
 function clearAllNav() {
-    print('CLEARING ALL NAV');
+    print('NAV CLEARING ALL NAV');
     var result = Entities.findEntities(MyAvatar.position, 25000);
     result.forEach(function(r) {
         var properties = Entities.getEntityProperties(r, "name");
         if (properties.name.indexOf('navigation button') > -1) {
-            print('DELETING NAV BUTTON AT START:: '+r)
+            print('NAV DELETING NAV BUTTON AT START:: '+r)
             Entities.deleteEntity(r);
         }
     })
 }
 function CreateNavigationButton(scene, number) {
-    print('THIS NAVIGATION CREATING NAV!!' +scene.name + " " + number)
+    print('NAV NAVIGATION CREATING NAV!!' +scene.name + " " + number)
 
 
     Entities.addEntity({

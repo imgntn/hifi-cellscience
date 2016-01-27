@@ -1,6 +1,5 @@
 (function() {
     var self = this;
-    print('CREATING ADUIO ZONE ENTITY')
     var baseURL = "https://hifi-content.s3.amazonaws.com/DomainContent/CellScience/";
     var version = 7;
     this.preload = function(entityId) {
@@ -16,12 +15,10 @@
             localOnly: true,
             volume: 0.4
         };
+
         this.sound = SoundCache.getSound(self.soundURL);
 
-
-
     }
-
 
     this.getUserData = function() {
         self.properties = Entities.getEntityProperties(self.entityId);
@@ -31,8 +28,6 @@
             self.userData = {};
         }
     }
-
-    //      Script.update.connect(this.update);
 
 
     this.enterEntity = function(entityID) {

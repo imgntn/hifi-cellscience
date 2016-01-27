@@ -1,34 +1,30 @@
-(function () {
+(function() {
 
 	var version = 1;
 	var added = false;
-	this.frame=0;
+	this.frame = 0;
+	var utilsScript = Script.resolvePath('utils.js');
+	Script.include(utilsScript);
 
 	var self = this;
 	var baseURL = "https://hifi-content.s3.amazonaws.com/DomainContent/CellScience/";
 
-	this.preload = function (entityId) {
-		print('THIS NAV CALLING PRELOAD FOR ' + entityId)
+	this.preload = function(entityId) {
 		this.entityId = entityId;
 		self.getUserData();
 		this.buttonImageURL = baseURL + "GUI/GUI_" + self.userData.name + ".png?" + version;
-		if(self.button===undefined){
-			print('THIS NAV SELF BUTTON IS UNDEFINED, ADDING')
+		if (data.hasButton === false) {
+			print('NAV NO BUTTON ADDING ONE!!')
 			self.button = true;
 			self.addButton();
 
+		} else {
+			print('NAV SELF ALREADY HAS A BUTTON!!')
 		}
-		else{
-			print('THIS ANV SELF ALRAEDY HAS A BUTTON!!')
-		}
-		
-		  
-			   print ("BODY PITCH: " + JSON.stringify(MyAvatar.bodyPitch)
-			  + "BODY YAW: " + JSON.stringify(MyAvatar.bodyYaw)
-			  + "BODY ROLL: " + JSON.stringify(MyAvatar.bodyRoll));
+
 	}
 
-	this.addButton = function () {
+	this.addButton = function() {
 
 
 		self.getUserData();
@@ -37,7 +33,7 @@
 		this.buttonHeight = 50;
 		this.buttonPadding = 10;
 
-		this.buttonPositionX = (self.userData.offset + 1) * (this.buttonWidth + this.buttonPadding) + (self.windowDimensions.x/2) - (this.buttonWidth * 3 + this.buttonPadding*2.5) ;
+		this.buttonPositionX = (self.userData.offset + 1) * (this.buttonWidth + this.buttonPadding) + (self.windowDimensions.x / 2) - (this.buttonWidth * 3 + this.buttonPadding * 2.5);
 		this.buttonPositionY = (self.windowDimensions.y - self.buttonHeight) - 50;
 		this.button = Overlays.addOverlay("image", {
 			x: self.buttonPositionX,
@@ -49,35 +45,35 @@
 			alpha: 1.0
 		});
 
-		var storedOverlays =  Settings.getValue('cellscienceOverlays');
-		var currentOverlays = [];
-		if(storedOverlays.length!==0){
-			storedOverlays.push(this.button);
-			currentOverlays = storedOverlays;
-		}
-		else{
-			currentOverlays.push(this.button)
-		}
+		// var storedOverlays = Settings.getValue('cellscienceOverlays-'+ self.userData.name);
+		// var currentOverlays = [];
+		// if (storedOverlays.length !== 0) {
+		// 	storedOverlays.push(this.button);
+		// 	currentOverlays = storedOverlays;
+		// } else {
+		// 	currentOverlays.push(this.button)
+		// }
 
-		// Settings.setValue('cellscienceOverlays',currentOverlays);
-		print('CURRENT OVERLAYS:::'+currentOverlays)
-        print('THIS NAVIGATION BUTTON OVERLAY IS::'+this.button)
+		// Settings.setValue('cellscienceOverlays-'+ self.userData.name,currentOverlays);
+
+		// // Settings.setValue('cellscienceOverlays',currentOverlays);
+		// print('NAV CURRENT OVERLAYS:::' + currentOverlays)
+		// print('NAV NAVIGATION BUTTON OVERLAY IS::' + self.button)
 
 
 	}
 
 
 
-	this.update = function(deltaTime){
-		if (self.frame < 10){
+	this.update = function(deltaTime) {
+		if (self.frame < 10) {
 			self.frame++;
-		}
-		else{
-//			this.lookAt(this.userData.target);
+		} else {
+			//			this.lookAt(this.userData.target);
 		}
 	}
 
-	this.onClick = function (event) {
+	this.onClick = function(event) {
 		var clickedOverlay = Overlays.getOverlayAtPoint({
 			x: event.x,
 			y: event.y
@@ -85,34 +81,34 @@
 
 
 		if (clickedOverlay == self.button) {
-			print("Clicked navigation button: " + self.userData.name + ", and looking at " + self.userData.target.x + ", "
-				  + self.userData.target.y + ", " + self.userData.target.z);
-			
+			print("NAV Clicked navigation button: " + self.userData.name + ", and looking at " + self.userData.target.x + ", " + self.userData.target.y + ", " + self.userData.target.z);
+
 			self.lookAtTarget();
 		}
-
 
 	}
 
 	this.lookAtTarget = function() {
 		self.getUserData();
 		var direction = Vec3.normalize(Vec3.subtract(self.userData.entryPoint, self.userData.target));
-		var pitch = Quat.angleAxis(Math.asin(-direction.y) * 180.0 / Math.PI, {x:1, y:0, z:0});
-		var yaw = Quat.angleAxis(Math.atan2(direction.x, direction.z) * 180.0 / Math.PI, {x:0, y:1, z:0});
-//		var rotation = Quat.multiply(yaw, pitch);
-//		
-//		print ("AVATAR rotation is " + rotation.x);
+		var pitch = Quat.angleAxis(Math.asin(-direction.y) * 180.0 / Math.PI, {
+			x: 1,
+			y: 0,
+			z: 0
+		});
+		var yaw = Quat.angleAxis(Math.atan2(direction.x, direction.z) * 180.0 / Math.PI, {
+			x: 0,
+			y: 1,
+			z: 0
+		});
+
 		MyAvatar.goToLocation(self.userData.entryPoint, true, yaw);
-//		MyAvatar.orientation = rotation;
-		//MyAvatar.headPitch = pitch;
-		
-	
 
 		MyAvatar.headYaw = 0;
 
 	}
 
-	this.getUserData = function () {
+	this.getUserData = function() {
 		this.properties = Entities.getEntityProperties(this.entityId);
 		if (self.properties.userData) {
 			this.userData = JSON.parse(this.properties.userData);
@@ -121,27 +117,18 @@
 		}
 	}
 
-var buttonDeleter;
-var deleterCount = 0;
-	this.unload = function () {
-		print('THIS NAVIGATION BUTTON UNLOAD!!!',this.button,this.entityId)
-
+	var buttonDeleter;
+	var deleterCount = 0;
+	this.unload = function() {
+		print('NAV UNLOAD - BUTTON, ENTITY -- '+ this.button + " // " + this.entityId)
 
 		Overlays.deleteOverlay(self.button);
-		// buttonDeleter=Script.setInterval(function(){
-		// 	print('INSIDE BUTTON DELETER INTERVAL',deleterCount)
-		// 	Overlays.deleteOverlay(self.button);
-		// 	deleterCount++;
-		// 	if(deleterCount===10){
-		// 		Script.clearInterval(buttonDeleter);
-		// 	}
-		// },1000)
 
 		Controller.mousePressEvent.disconnect(this.onClick);
-		  // Script.update.disconnect(this.update);
+		// Script.update.disconnect(this.update);
 	}
 
 	Controller.mousePressEvent.connect(this.onClick);
-	  // Script.update.connect(this.update);
+	// Script.update.connect(this.update);
 
 });
