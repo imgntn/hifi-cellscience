@@ -135,6 +135,7 @@ function makeAll() {
                     }),
                     visible: true,
                     userData: JSON.stringify({
+                        grabbableKey:{grabbable:false},
                         isDynein: isDynein,
                         baseURL: baseLocation
                     }),

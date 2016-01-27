@@ -1,4 +1,4 @@
-var version = 255;
+var version = 1001;
 var cellLayout;
 var baseLocation = "https://hifi-content.s3.amazonaws.com/DomainContent/CellScience/";
 print('baseLocation IS :::: ' + baseLocation)
@@ -638,7 +638,7 @@ function CreateNavigationButton(scene, number) {
             }
         }),
         // position:{x:3000,y:13500,z:3000},
-        script: baseLocation + "Scripts/navigationButton.js" ,
+        script: baseLocation + "Scripts/navigationButton.js?"+version ,
         collisionless: true,
 
     });
