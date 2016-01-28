@@ -14,9 +14,9 @@
         var mySavedSettings = Settings.getValue(entityId);
 
         if (mySavedSettings.buttons !== undefined) {
-            print('NAV preload buttons'+ mySavedSettings.buttons)
+            // print('NAV preload buttons'+ mySavedSettings.buttons)
             mySavedSettings.buttons.forEach(function(b) {
-                print('NAV deleting button'+ b)
+                // print('NAV deleting button'+ b)
                 Overlays.deleteOverlay(b);
             })
             Settings.setValue(entityId,'')
@@ -26,12 +26,12 @@
         self.getUserData();
         this.buttonImageURL = baseURL + "GUI/GUI_" + self.userData.name + ".png?" + version;
         if (self.button === undefined) {
-            print('NAV NO BUTTON ADDING ONE!!')
+            // print('NAV NO BUTTON ADDING ONE!!')
             self.button = true;
             self.addButton();
 
         } else {
-            print('NAV SELF ALREADY HAS A BUTTON!!')
+            // print('NAV SELF ALREADY HAS A BUTTON!!')
         }
 
     }
@@ -65,8 +65,8 @@
         } else {
             buttons.push(this.button);
         }
-        print('NAV ENTITY ID IN ADDBUTTON'+ this.entityId)
-        print('NAV BUTTONS IN ADDBUTTON:: '+ buttons)
+        // print('NAV ENTITY ID IN ADDBUTTON'+ this.entityId)
+        // print('NAV BUTTONS IN ADDBUTTON:: '+ buttons)
         Settings.setValue(this.entityId, {
             buttons: buttons
         });
@@ -91,7 +91,7 @@
 
 
         if (clickedOverlay == self.button) {
-            print("NAV Clicked navigation button: " + self.userData.name + ", and looking at " + self.userData.target.x + ", " + self.userData.target.y + ", " + self.userData.target.z);
+            // print("NAV Clicked navigation button: " + self.userData.name + ", and looking at " + self.userData.target.x + ", " + self.userData.target.y + ", " + self.userData.target.z);
 
             self.lookAtTarget();
         }
@@ -130,7 +130,7 @@
     var buttonDeleter;
     var deleterCount = 0;
     this.unload = function() {
-        print('NAV UNLOAD - BUTTON, ENTITY -- ' + this.button + " // " + this.entityId)
+        // print('NAV UNLOAD - BUTTON, ENTITY -- ' + this.button + " // " + this.entityId)
 
         Overlays.deleteOverlay(self.button);
 

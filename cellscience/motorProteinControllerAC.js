@@ -1,7 +1,7 @@
 var numDynein = 2;
 var numKinesin = 2;
 var percentOnMainMT = 100;
-print('RUNNING AC!!')
+// print('RUNNING AC!!')
 
 var USE_LOCAL_HOST = false;
 var baseLocation;
@@ -42,44 +42,44 @@ var motorProteins = [];
 var terms;
 
 
-// function deleteAllMotorProteins() {
+function deleteAllMotorProteins() {
 
-//      Messages.sendMessage('Hifi-Motor-Protein-Channel','delete')
+     // Messages.sendMessage('Hifi-Motor-Protein-Channel','delete')
     
-//      return;
-//     // var position = {
-//     //     x: 5000,
-//     //     y: 5000,
-//     //     z: 5000
-//     // };
-//     // print('DELETING ALL MOTOR PROTEINS')
-//     // EntityViewer.setPosition(position);
-//     // EntityViewer.setKeyholeRadius(10000);
-//     // EntityViewer.queryOctree();
+     // return;
+    // var position = {
+    //     x: 5000,
+    //     y: 5000,
+    //     z: 5000
+    // };
+    // print('DELETING ALL MOTOR PROTEINS')
+    // EntityViewer.setPosition(position);
+    // EntityViewer.setKeyholeRadius(10000);
+    // EntityViewer.queryOctree();
 
-//     // var results = Entities.findEntities(position, 10000);
-//     // var motorProteins = [];
+    // var results = Entities.findEntities(position, 10000);
+    // var motorProteins = [];
 
-//     // if (results.length === 0) {
-//     //     print('NO ENTITIES')
-//     //     return;
-//     // }
-//     // print('FOUND ENTITIES LENGTH:::', results.length)
-//     // results.forEach(function(r) {
-//     //     var properties = Entities.getEntitiesProperties(r, "name");
-//     //     if (properties.name.indexOf('Hifi-Motor-Protein-Anchor') > -1) {
-//     //            print('FOUND A MOTOR PROTEIN')
-//     //         motorProteins.push(r);
-//     //     }
-//     // })
-//     // while (motorProteins.length > 0) {
-//     //     print('SHOULD DELETE A MOTOR PROTEIN ENTITY')
-//     //     Entities.deleteEntity(motorProteins.pop());
-//     // }
-// }
+    // if (results.length === 0) {
+    //     print('NO ENTITIES')
+    //     return;
+    // }
+    // print('FOUND ENTITIES LENGTH:::', results.length)
+    // results.forEach(function(r) {
+    //     var properties = Entities.getEntitiesProperties(r, "name");
+    //     if (properties.name.indexOf('Hifi-Motor-Protein-Anchor') > -1) {
+    //            print('FOUND A MOTOR PROTEIN')
+    //         motorProteins.push(r);
+    //     }
+    // })
+    // while (motorProteins.length > 0) {
+    //     print('SHOULD DELETE A MOTOR PROTEIN ENTITY')
+    //     Entities.deleteEntity(motorProteins.pop());
+    // }
+}
 
 function makeAll() {
-    print('CREATING MOTOR PROTEINS')
+    // print('CREATING MOTOR PROTEINS')
     var segment;
     var segments = shuffleSegments();
     var lastSegment = [];
@@ -141,11 +141,11 @@ function makeAll() {
                     }),
                 })
             };
-            print('MADE A MOTOR PROTEIN!!!')
+            // print('MADE A MOTOR PROTEIN!!!')
         }
     }
 
-    print("made " + numDynein + " dyneins and " + numKinesin + " kinesins");
+    // print("made " + numDynein + " dyneins and " + numKinesin + " kinesins");
 }
 
 function shuffleSegments() {
@@ -211,7 +211,6 @@ function update(deltaTime) {
         var newPos = getPositionOnCurve(dir, curves[motorProteins[i].curve][motorProteins[i].segment]);
         var newRot = getRotationOnCurve(dir, curves[motorProteins[i].curve][motorProteins[i].segment]);
 
-        print('NEW MOTOR PROTEIN POSITION:::'+JSON.stringify(newPos));
         Entities.editEntity(motorProteins[i].protein, {
             type: "Model",
             position: newPos,
@@ -306,8 +305,8 @@ function addOffset(dimension, n) {
 }
 
 function unload() {
-    print('DELETE MOTOR PROTEINS AT UNLOAD' + Entities.serversExist() + "//" + Entities.canRez())
-     Messages.sendMessage('Hifi-Motor-Protein-Channel','delete')
+    // print('DELETE MOTOR PROTEINS AT UNLOAD' + Entities.serversExist() + "//" + Entities.canRez())
+    //  Messages.sendMessage('Hifi-Motor-Protein-Channel','delete')
     print("unload motorProteinController");
     print("   PPS:" + Entities.getPacketsPerSecond());
     Script.update.disconnect(this.update);

@@ -32,7 +32,7 @@
             if (rProps.name.indexOf('Hifi-Motor-Protein-Anchor') > -1) {
                 mpCount++
             }
-            print('mp count')
+            // print('mp count')
             if (mpCount > 4) {
                 Entities.deleteEntity(entityId);
                 return;
@@ -61,7 +61,7 @@
     }
 
     this.clickReleaseOnEntity = function(entityId, mouseEvent) {
-        print('CLICKED ON MOTOR PROTEIN')
+        // print('CLICKED ON MOTOR PROTEIN')
         if (mouseEvent.isLeftButton && !self.isRiding) {
             print("GET ON");
             self.isRiding = true;
@@ -99,7 +99,7 @@
         //  print('JBP self.lastTargetLocation' + JSON.stringify(self.lastTargetLocation))
         //  print('JBP self.targetLocation' + JSON.stringify(self.targetLocation))
         var diff = Vec3.distance(self.targetLocation, self.lastTargetLocation);
-        print('JBP diff is::' + diff)
+        // print('JBP diff is::' + diff)
         self.addThrustToAvatar(deltaTime);
     }
 
@@ -112,7 +112,7 @@
         // print('JBP velocity' + JSON.stringify(self.velocity))
         var thrustToAdd = Vec3.multiply(100, targetCurrentLocationToLastLocation);
         thrustToAdd = Vec3.multiply(thrustToAdd, 1 / deltaTime);
-        print('JBP adding thrust!' + JSON.stringify(thrustToAdd))
+        // print('JBP adding thrust!' + JSON.stringify(thrustToAdd))
 
         MyAvatar.addThrust(thrustToAdd);
 
@@ -131,7 +131,7 @@
     }
 
     this.reset = function() {
-        print('reset')
+        // print('reset')
         if (self.isRiding) {
             Overlays.editOverlay(this.exitButton, {
                 visible: false
@@ -141,18 +141,18 @@
     }
 
     this.unload = function() {
-        print("unload");
+        // print("unload");
         self.reset();
 
         Controller.mousePressEvent.disconnect(this.onMousePress);
     }
 
     function handleMessages(channel, message, sender) {
-        print('HANDLING A MESSAGE IN PROTEIN')
+        // print('HANDLING A MESSAGE IN PROTEIN')
         if (sender === MyAvatar.sessionUUID) {
             if (channel === "Hifi-Motor-Protein-Channel") {
                 if (message === 'delete') {
-                    print('SHOULD DELETE PROTEIN')
+                    // print('SHOULD DELETE PROTEIN')
                     Entities.deleteEntity(self.entityId)
                 }
             }
