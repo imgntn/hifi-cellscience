@@ -23,21 +23,23 @@
         } else {
             this.rotation = 0;
         }
-        var props = Entities.getEntityProperties(entityId);
-        var results = Entities.findEntities(props.position, 10000);
-        var mpCount = 0;
 
-        results.forEach(function(r) {
-            var rProps = Entities.getEntityProperties(r, "name")
-            if (rProps.name.indexOf('Hifi-Motor-Protein-Anchor') > -1) {
-                mpCount++
-            }
-            // print('mp count')
-            if (mpCount > 4) {
-                Entities.deleteEntity(entityId);
-                return;
-            }
-        })
+        
+        // var props = Entities.getEntityProperties(entityId);
+        // var results = Entities.findEntities(props.position, 10000);
+        // var mpCount = 0;
+
+        // results.forEach(function(r) {
+        //     var rProps = Entities.getEntityProperties(r, "name")
+        //     if (rProps.name.indexOf('Hifi-Motor-Protein-Anchor') > -1) {
+        //         mpCount++
+        //     }
+        //     // print('mp count')
+        //     if (mpCount > 4) {
+        //         Entities.deleteEntity(entityId);
+        //         return;
+        //     }
+        // })
 
     }
 

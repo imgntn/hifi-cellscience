@@ -15,7 +15,7 @@ var baseURL = "https://hifi-content.s3.amazonaws.com/DomainContent/CellScience/"
             stereo: true,
             loop: false,
             localOnly: true,
-            volume: 1.0,
+            volume: 0.5,
             position: this.position
         };
         this.sound = SoundCache.getSound(this.soundURL);

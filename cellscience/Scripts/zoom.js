@@ -7,6 +7,7 @@
 	this.entered = true;
 
 	this.preload = function(entityID) {
+
 		this.entityId = entityID;
 
 		var properties = Entities.getEntityProperties(entityID);
@@ -17,11 +18,11 @@
 			loop: false,
 			localOnly: false,
 			position:this.position,
-			volume: 1.0
+			volume: 0.5
 		};
 		this.teleportSound = SoundCache.getSound("https://hifi-content.s3.amazonaws.com/DomainContent/CellScience/Audio/whoosh.wav");
-
-			print(" portal destination is " + portalDestination);
+	print('JBP PRELOADING A ZOOM ENTITY')
+	print(" portal destination is " + portalDestination);
 	}
 
 	this.enterEntity = function(entityID) {

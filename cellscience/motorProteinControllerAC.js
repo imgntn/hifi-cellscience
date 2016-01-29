@@ -1,7 +1,7 @@
 var numDynein = 2;
 var numKinesin = 2;
 var percentOnMainMT = 100;
-// print('RUNNING AC!!')
+print('RUNNING AC!!')
 
 var USE_LOCAL_HOST = false;
 var baseLocation;
@@ -43,43 +43,42 @@ var terms;
 
 
 function deleteAllMotorProteins() {
+    var position = {
+        x: 3280,
+        y: 13703,
+        z: 4405
+    };
+    print('DELETING ALL MOTOR PROTEINS')
+    EntityViewer.setPosition(position);
+    EntityViewer.setKeyholeRadius(20000);
+    EntityViewer.queryOctree();
 
-     // Messages.sendMessage('Hifi-Motor-Protein-Channel','delete')
-    
-     // return;
-    // var position = {
-    //     x: 5000,
-    //     y: 5000,
-    //     z: 5000
-    // };
-    // print('DELETING ALL MOTOR PROTEINS')
-    // EntityViewer.setPosition(position);
-    // EntityViewer.setKeyholeRadius(10000);
-    // EntityViewer.queryOctree();
+    var results = Entities.findEntities(position, 20000);
+    var motorProteins = [];
 
-    // var results = Entities.findEntities(position, 10000);
-    // var motorProteins = [];
+    if (results.length === 0) {
+        print('NO ENTITIES')
+        return;
+    }
+    print('FOUND ENTITIES LENGTH:::', results.length)
+    results.forEach(function(r) {
+        var properties = Entities.getEntitiesProperties(r, "name");
+        if (properties.name.indexOf('Hifi-Motor-Protein-Anchor') > -1) {
+               print('FOUND A MOTOR PROTEIN')
+            motorProteins.push(r);
+        }
+    })
+    print('MOTOR PROTEINS LENGTH:::' + motorProteins.length);
+    while (motorProteins.length > 0) {
+        print('SHOULD DELETE A MOTOR PROTEIN ENTITY')
+        Entities.deleteEntity(motorProteins.pop());
+    }
 
-    // if (results.length === 0) {
-    //     print('NO ENTITIES')
-    //     return;
-    // }
-    // print('FOUND ENTITIES LENGTH:::', results.length)
-    // results.forEach(function(r) {
-    //     var properties = Entities.getEntitiesProperties(r, "name");
-    //     if (properties.name.indexOf('Hifi-Motor-Protein-Anchor') > -1) {
-    //            print('FOUND A MOTOR PROTEIN')
-    //         motorProteins.push(r);
-    //     }
-    // })
-    // while (motorProteins.length > 0) {
-    //     print('SHOULD DELETE A MOTOR PROTEIN ENTITY')
-    //     Entities.deleteEntity(motorProteins.pop());
-    // }
+    makeAll();
 }
 
 function makeAll() {
-    // print('CREATING MOTOR PROTEINS')
+    print('CREATING MOTOR PROTEINS')
     var segment;
     var segments = shuffleSegments();
     var lastSegment = [];
@@ -176,7 +175,12 @@ function update(deltaTime) {
             print("servers exist -- makeAll...");
             Entities.setPacketsPerSecond(6000);
             print("PPS:" + Entities.getPacketsPerSecond());
-            makeAll();
+            print('SETTING TIMEOUT')
+            Script.setTimeout(function(){
+                print('RUNNING TIMEOUT')
+                deleteAllMotorProteins()
+            },8000)
+          
             initialized = true;
         }
         return;

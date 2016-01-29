@@ -160,7 +160,7 @@ var scenes = [
                     location: locations.ribosome[0],
                     baseURL: baseLocation
                 }),
-                script: "zoom",
+                script:"zoom.js?" + version,
                 visible: true
             }, {
                 model: "vesicle",
@@ -362,7 +362,7 @@ var scenes = [
                     location: locations.hexokinase[0],
                     baseURL: baseLocation
                 }),
-                script: "zoom",
+                script: "zoom.js?" + version,
                 visible: true
             }, {
                 model: "pfructo_kinase",
