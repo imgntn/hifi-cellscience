@@ -1,7 +1,7 @@
 (function() {
     var self = this;
     var baseURL = "https://hifi-content.s3.amazonaws.com/DomainContent/CellScience/";
-    var version = 7;
+    var version = 8;
     this.preload = function(entityId) {
         self.soundPlaying = false;
         self.entityId = entityId;
@@ -13,7 +13,7 @@
             stereo: true,
             loop: true,
             localOnly: true,
-            volume: 0.2
+            volume: 0.5
         };
 
         this.sound = SoundCache.getSound(self.soundURL);
